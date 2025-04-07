@@ -1,28 +1,42 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { GlobalContext } from "../../context";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 const AddNewBlog = () => {
   const { formData, setFormData } = useContext(GlobalContext);
+
   const navigate = useNavigate();
 
   async function handleSaveBlogToDatabase() {
-    const response = await axios.post("http://localhost:5000/api/blogs/add", {
-      title: formData.title,
-      description: formData.description,
-    });
-    const result = await response.data;
-
-    if (result) {
-      setFormData({
-        title: "",
-        description: "",
+    if (!formData.title || !formData.description) {
+      toast.error("Both Title and description are required");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:5000/api/blogs/add", {
+        title: formData.title,
+        description: formData.description,
       });
-      navigate("/");
+      const result = await response.data;
+      if (result) {
+        setFormData({
+          title: "",
+          description: "",
+        });
+        toast.success("Blog added successfully");
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+      }
+    } catch (e) {
+      console.error("Error saving blog:", e);
+      toast.error("Something went wrong. Please try again.");
     }
   }
   return (
     <div className="p-6 space-y-2 ">
+      <Toaster position="top-center" />
       <h1 className="">Add A Blog</h1>
       <div className="flex flex-col w-md gap-5 bg-gradient-to-r from-slate-400 to-slate-700 text-white p-10 rounded-2xl shadow-xl">
         <div className="flex  ">

@@ -3,6 +3,7 @@ import { GlobalContext } from "../../context";
 import axios from "axios";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 const Home = () => {
   const { blogList, setBlogList, pending, setPending } =
     useContext(GlobalContext);
@@ -35,9 +36,11 @@ const Home = () => {
       fetchListOfBlogs();
       // navigate(0);
     }
+    toast.success("Successfully deleted");
   }
   return (
     <div className=" max-w-8xl mx-auto p-8 space-y-5">
+      <Toaster position="top-center" />
       <h1>Blog Lists</h1>
       {pending ? (
         <h1>Loading Blogs ! Please wait</h1>

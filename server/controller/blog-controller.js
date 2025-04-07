@@ -16,13 +16,18 @@ export const fetchListOfBlogs = async (req, res) => {
   if (!blogList) {
     return res.status(404).json({ message: "No Blogs Found" });
   }
+
   return res.status(200).json({ blogList });
 };
 
 export const addNewBlog = async (req, res) => {
   const { title, description } = req.body;
   const currentDate = new Date();
-
+  if (!title || !description) {
+    return res
+      .send(400)
+      .json({ message: "Title and Description are required. " });
+  }
   const newlyCreatedBlog = new Blog({
     title,
     description,
@@ -30,18 +35,13 @@ export const addNewBlog = async (req, res) => {
   });
   try {
     await newlyCreatedBlog.save();
+    return res.status(201).json({ newlyCreatedBlog });
   } catch (e) {
-    console.log(e);
+    console.error("Error saving blog:", e);
+    return ress
+      .status(500)
+      .json({ message: "Failed to save blog. Please try again." });
   }
-  try {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    await newlyCreatedBlog.save(session);
-    session.commitTransaction();
-  } catch (e) {
-    return res.send(500).json({ message: e });
-  }
-  return res.status(200).json({ newlyCreatedBlog });
 };
 
 export const deleteABlog = async (req, res) => {
