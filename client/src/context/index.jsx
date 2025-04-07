@@ -7,8 +7,19 @@ export default function GlobalState({ children }) {
     title: "",
     desciption: "",
   });
+  const [blogList, setBlogList] = useState([]);
+  const [pending, setPending] = useState(false);
   return (
-    <GlobalContext.Provider value={{ formData, setFormData }}>
+    <GlobalContext.Provider
+      value={{
+        formData,
+        setFormData,
+        blogList,
+        setBlogList,
+        pending,
+        setPending,
+      }}
+    >
       {children}
     </GlobalContext.Provider>
   );
