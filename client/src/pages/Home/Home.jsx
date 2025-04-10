@@ -24,6 +24,9 @@ const Home = () => {
   useEffect(() => {
     fetchListOfBlogs();
   }, []);
+  function handleEdit(currentBlogItem) {
+    navigate("/add-blog", { state: { getCurrentBlogItem: currentBlogItem } });
+  }
 
   async function handleDeleteBlog(getCurrentId) {
     const response = await axios.delete(
@@ -38,6 +41,7 @@ const Home = () => {
     }
     toast.success("Successfully deleted");
   }
+
   return (
     <div className=" max-w-8xl mx-auto p-8 space-y-5">
       <Toaster position="top-center" />
@@ -55,7 +59,7 @@ const Home = () => {
                 <p>{blogItem.title}</p>
                 <p>{blogItem.description}</p>
                 <div className="flex space-x-6">
-                  <FaEdit size={30} />
+                  <FaEdit size={30} onClick={() => handleEdit(blogItem)} />
                   <FaTrash
                     size={30}
                     onClick={() => handleDeleteBlog(blogItem._id)}
